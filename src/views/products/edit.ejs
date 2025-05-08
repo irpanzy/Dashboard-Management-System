@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Produk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Montserrat", sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+            color: #1f2937;
+        }
+
+        header {
+            background-color: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 600px;
+            background-color: white;
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+        }
+
+        button {
+            margin-top: 25px;
+            background-color: #3fc1c9;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2b9d9a;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 300px;
+        }
+
+        .toast {
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateX(100%);
+            animation: slideIn 0.3s forwards, fadeOut 0.5s 2.5s forwards;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toast-success {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .toast-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .toast-content {
+            flex-grow: 1;
+        }
+
+        .toast-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding-left: 10px;
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        footer a {
+            color: #93c5fd;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        img {
+            display: block;
+            margin-top: 8px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            max-width: 100%;
+            /* Responsif untuk gambar */
+            height: auto;
+            /* Menjaga aspek rasio */
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        /* Media Query untuk responsif */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="file"],
+            button {
+                font-size: 0.9rem;
+            }
+
+            button {
+                padding: 10px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                font-size: 1.2rem;
+                padding: 1rem;
+            }
+
+            .container {
+                margin: 20px;
+            }
+
+            h2 {
+                font-size: 1.1rem;
+            }
+
+            label {
+                font-size: 0.9rem;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="file"] {
+                font-size: 0.85rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Edit Produk</h2>
+
+        <div class="toast-container" id="toastContainer">
+            <% if (locals.success && locals.success.length> 0) { %>
+                <div class="toast toast-success" id="successToast">
+                    <div class="toast-content">
+                        <%= locals.success[0] %>
+                    </div>
+                    <button class="toast-close" onclick="closeToast('successToast')">
+                        &times;
+                    </button>
+                </div>
+                <% } %>
+                    <% if (locals.error && locals.error.length> 0) { %>
+                        <div class="toast toast-danger" id="errorToast">
+                            <div class="toast-content">
+                                <%= locals.error[0] %>
+                            </div>
+                            <button class="toast-close" onclick="closeToast('errorToast')">
+                                &times;
+                            </button>
+                        </div>
+                        <% } %>
+        </div>
+
+        <form action="/api/v1/products/<%= product.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+            <label>Nama Produk:</label>
+            <input type="text" name="name" value="<%= product.name %>" required />
+
+            <label>Harga:</label>
+            <input type="number" name="price" value="<%= product.price %>" required />
+
+            <label>Kategori:</label>
+            <input type="text" name="category" value="<%= product.category %>" required />
+
+            <label>Gambar Saat Ini:</label>
+            <img src="<%= product.image %>" alt="Gambar saat ini" width="150" />
+
+            <label>Upload Gambar Baru:</label>
+            <input type="file" name="image" />
+
+            <button type="submit">Simpan Perubahan</button>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Sistem Manajemen Dashboard. Semua Hak Dilindungi.</p>
+        <p>
+            <a href="#">Kebijakan Privasi</a>
+            <span> | </span>
+            <a href="#">Ketentuan Layanan</a>
+        </p>
+    </footer>
+
+    <script>
+        function closeToast(id) {
+            const toast = document.getElementById(id);
+            if (toast) {
+                toast.style.animation = "fadeOut 0.3s forwards";
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const toasts = document.querySelectorAll(".toast");
+            if (toasts.length > 0) {
+                setTimeout(() => {
+                    toasts.forEach((toast) => toast.remove());
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+
+</html>
