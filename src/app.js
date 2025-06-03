@@ -7,7 +7,7 @@ const session = require("express-session");
 const flash = require("connect-flash");
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 // Routes
 const productRoute = require("./routes/productRoute");
@@ -15,9 +15,13 @@ const userRoute = require("./routes/userRoute");
 
 app.use(
   session({
-    secret: "irpanzy",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000, // 24 jam
+    },
   })
 );
 
@@ -40,7 +44,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Static files (CSS, images, dll)
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "../public")));
 
 // API Routes
 app.use("/", productRoute);
@@ -50,8 +54,15 @@ app.use("/", userRoute);
 app.get("/", (req, res) => {
   res.render("index");
 });
-app.use("/", productRoute);
-app.use("/", userRoute);
+
+// Health check endpoint untuk Vercel
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "Server is running",
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // Middleware to handle 404 errors (Page Not Found)
 app.use((req, res, next) => {
@@ -70,7 +81,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
-});
+// Untuk development
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+  });
+}
+
+// Export untuk Vercel
+module.exports = app;
